@@ -38,30 +38,77 @@ public class Flag extends JApplet {
 	private final double L = 1.0/13;  // Width of stripe
 
 	// You will need to set values for these in paint()
-	private double flag_width = getWidth(); // width of flag in pixels
+	private double flag_width = (B * getHeight())/A; // width of flag in pixels
 	private double flag_height = getHeight();  // height of flag in pixels
 	private double stripe_height = (getHeight()/13);// height of an individual stripe in pixels
 
 	// init() will automatically be called when an applet is run
 	public void init() {
+		
 		// Choice of width = 1.9 * height to start off
 		// 760 : 400 is ratio of FLY : HOIST
+		setVisible(true); 
 		setSize(760, 400);
+
 		repaint();
 	}
 
 	// paint() will be called every time a resizing of an applet occurs
+	
 	public void paint(Graphics g) {
+		flag_width = (B * getHeight())/A; 
+		flag_height = getHeight();  
+		stripe_height = (getHeight()/13);
+		drawBackground(g);
+		drawStripes(g);
+		drawUnion(g);
 	}
 
 	private void drawBackground(Graphics g) {
-		g.drawRect(0, 0, getWidth(), getHeight());
+		g.setColor(Color.black);
+		g.fillRect(0, 0, getWidth(), getHeight());
 	}
 	
 	public void drawStripes(Graphics g) {
+		final int x = 0;
+		int y = 0;
+		int curCol = 1; //red = 1, white = 2
+
+		System.out.println(getHeight());
+
+		for(int n = 0; n < STRIPES; n++) {
+			if (curCol == 1){ // 1 = red
+				System.out.println("CURRENT COL: red");
+				g.setColor(Color.red);
+				g.fillRect(x, y, (int) flag_width,(int) stripe_height);
+				
+				curCol = 2;
+				y += stripe_height;
+				
+				System.out.println("Y POS: " + y);
+						
+			}
+			else if (curCol == 2){ // 2 = white
+				System.out.println("CURRENT COL: white");	
+				
+				g.setColor(Color.white);
+				g.fillRect(x, y, (int) flag_width,(int) stripe_height);
+				
+				curCol = 1;
+				y += stripe_height;
+				System.out.println("Y POS: " + y);
+			}
+		}
+			
 	}
 
 	public void drawUnion(Graphics g) {
+		g.setColor(Color.blue);
+		
+		double hoistWidth = flag_height*D;
+		double hoistHeight = flag_height*C;
+		
+		g.fillRect(0, 0, (int) hoistWidth, (int) hoistHeight);
 	}
 
 	public void drawStars(Graphics g) {
