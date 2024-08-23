@@ -28,19 +28,19 @@ public class Flag extends JApplet {
 	// out how to draw the parts of the flag (stripes, stars, field).
 	private final double A = 1.0;  // Hoist (width) of flag
 	private final double B = 1.9;  // Fly (length) of flag
-	private final double C = 7.0/13;  // Hoist of Union
+	private final double C = 7.0/STRIPES;  // Hoist of Union
 	private final double D = 0.76;  // Fly of Union
 	private final double E = 0.054;  // See flag specification
 	private final double F = 0.054;  // See flag specification
 	private final double G = 0.063;  // See flag specification
 	private final double H = 0.063;  // See flag specification
 	private final double K = 0.0616;  // Diameter of star
-	private final double L = 1.0/13;  // Width of stripe
+	private final double L = 1.0/STRIPES;  // Width of stripe
 
 	// You will need to set values for these in paint()
-	private double flag_width = (B * getHeight())/A; // width of flag in pixels
-	private double flag_height = getHeight();  // height of flag in pixels
-	private double stripe_height = (getHeight()/13);// height of an individual stripe in pixels
+	private double flag_width;// width of flag in pixels
+	private double flag_height; // height of flag in pixels
+	private double stripe_height;// height of an individual stripe in pixels
 
 	// init() will automatically be called when an applet is run
 	public void init() {
@@ -49,19 +49,31 @@ public class Flag extends JApplet {
 		// 760 : 400 is ratio of FLY : HOIST
 		setVisible(true); 
 		setSize(760, 400);
-
 		repaint();
 	}
 
 	// paint() will be called every time a resizing of an applet occurs
 	
 	public void paint(Graphics g) {
-		flag_width = (B * getHeight())/A; 
-		flag_height = getHeight();  
-		stripe_height = (getHeight()/13);
+		
+		
+		flag_width = getWidth();
+		flag_height = getHeight();
+
+		if ((B/A) * flag_height > flag_width) {  // change height
+			flag_height = (flag_width / (B / A));
+		} else { //change width
+			flag_width = (flag_height * (B / A));
+		}
+		
+		stripe_height = flag_height / STRIPES;
+		
 		drawBackground(g);
 		drawStripes(g);
 		drawUnion(g);
+		
+		
+		
 	}
 
 	private void drawBackground(Graphics g) {
@@ -73,9 +85,7 @@ public class Flag extends JApplet {
 		final int x = 0;
 		int y = 0;
 		int curCol = 1; //red = 1, white = 2
-
-		System.out.println(getHeight());
-
+		
 		for(int n = 0; n < STRIPES; n++) {
 			if (curCol == 1){ // 1 = red
 				System.out.println("CURRENT COL: red");
@@ -88,15 +98,12 @@ public class Flag extends JApplet {
 				System.out.println("Y POS: " + y);
 						
 			}
-			else if (curCol == 2){ // 2 = white
-				System.out.println("CURRENT COL: white");	
+			else if (curCol == 2){ // 2 = white	
 				
 				g.setColor(Color.white);
 				g.fillRect(x, y, (int) flag_width,(int) stripe_height);
-				
 				curCol = 1;
 				y += stripe_height;
-				System.out.println("Y POS: " + y);
 			}
 		}
 			
@@ -105,10 +112,10 @@ public class Flag extends JApplet {
 	public void drawUnion(Graphics g) {
 		g.setColor(Color.blue);
 		
-		double hoistWidth = flag_height*D;
-		double hoistHeight = flag_height*C;
+		double unionHeight = flag_height*C;
+		double unionWidth =  flag_height*D; //0.76
 		
-		g.fillRect(0, 0, (int) hoistWidth, (int) hoistHeight);
+		g.fillRect(0, 0, (int) unionWidth, (int) unionHeight);
 	}
 
 	public void drawStars(Graphics g) {
